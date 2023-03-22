@@ -16,5 +16,5 @@ module.exports = {
     'no-throw-literal': 'error',
     '@typescript-eslint/explicit-function-return-type': 'warn',
   },
-  ignorePatterns: ['dist/', '.eslintrc.js'],
+  ignorePatterns: ['dist/', '.eslintrc.js', 'jest.config.ts'],
 };

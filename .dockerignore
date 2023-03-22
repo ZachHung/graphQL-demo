@@ -8,3 +8,7 @@ temp/
 logs/
 .env
 coverage/
+.git
+.gitignore
+DOCKERFILE
+README.md

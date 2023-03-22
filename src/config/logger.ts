@@ -14,7 +14,7 @@ const logger = createLogger({
       format: () => moment().local().format('YYYY-MM-DD HH:mm:ss:SSS'),
     }),
     format.printf(({ timestamp, level, message }) => {
-      return `[${timestamp}] [${level}]: ${message}`;
+      return `[${timestamp}] [${level}]: ${JSON.stringify(message)}`;
     }),
   ),
 });
@@ -25,7 +25,7 @@ if (getEnv('NODE_ENV') !== 'production') {
       format: format.combine(
         format.colorize(),
         format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] [${level}]: ${message}`;
+          return `[${timestamp}] [${level}]: ${JSON.stringify(message)}`;
         }),
       ),
     }),

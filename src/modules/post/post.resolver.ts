@@ -1,14 +1,19 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { Context } from '../../core/types/context.interface';
+import { RequiredContext } from '../../core/types/context.interface';
 import { Post } from './post.entity';
 import { CreatePostInput, EditPostInput } from './post.input';
-import * as PostService from './post.service';
+import { injectable as Injectable, inject as Inject } from 'inversify';
+import { PostService } from './post.service';
+import LOCATOR from '../../core/container/types.container';
 
-@Resolver()
+@Injectable()
+@Resolver(() => Post)
 export class PostResolver {
+  constructor(@Inject(LOCATOR.Services.Post) private readonly postService: PostService) {}
+
   @Query(() => Post, { nullable: true })
   async postById(@Arg('postId') postId: string): Promise<Post | null> {
-    const response = await PostService.findById(postId);
+    const response = await this.postService.findById(postId);
     return response;
   }
 
@@ -16,9 +21,9 @@ export class PostResolver {
   @Mutation(() => Post)
   async createPost(
     @Arg('input') input: CreatePostInput,
-    @Ctx() { user }: Required<Context>,
+    @Ctx() { user }: RequiredContext,
   ): Promise<Post> {
-    const response = await PostService.create(input, user);
+    const response = await this.postService.create(input, user.id);
     return response;
   }
 
@@ -26,9 +31,9 @@ export class PostResolver {
   @Mutation(() => Post)
   async editPost(
     @Arg('input') input: EditPostInput,
-    @Ctx() { user }: Required<Context>,
+    @Ctx() { user }: RequiredContext,
   ): Promise<Post> {
-    const response = await PostService.edit(input, user);
+    const response = await this.postService.edit(input, user.id);
     return response;
   }
 }

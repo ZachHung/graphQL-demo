@@ -1,20 +1,30 @@
-import { AppDataSource } from '../../config/data-source';
 import { Event } from './event.entity';
 import { CreateEventInput } from './event.input';
+import { injectable as Injectable, inject as Inject } from 'inversify';
+import LOCATOR from '../../core/container/types.container';
+import { EventRepository } from './event.repository';
 
-export const findById = async (id: string): Promise<Event | null> => {
-  try {
-    const eventRepo = AppDataSource.getRepository(Event);
-    const event = await eventRepo.findOne({ where: { id }, relations: { editBy: true } });
-    return event;
-  } catch (error) {
-    return null;
+@Injectable()
+export class EventService {
+  constructor(
+    @Inject(LOCATOR.Repositories.Event) private readonly eventRepository: EventRepository,
+  ) {}
+
+  async findById(id: string): Promise<Event | null> {
+    try {
+      const event = await this.eventRepository.findOne({
+        where: { id },
+        relations: { editBy: true },
+      });
+      return event;
+    } catch (error) {
+      return null;
+    }
   }
-};
 
-export const create = async (input: CreateEventInput): Promise<Event> => {
-  const eventRepo = AppDataSource.getRepository(Event);
-  const event = eventRepo.create({ ...input });
-  await eventRepo.save(event);
-  return event;
-};
+  async create(input: CreateEventInput): Promise<Event> {
+    const event = this.eventRepository.create({ ...input });
+    await this.eventRepository.save(event);
+    return event;
+  }
+}

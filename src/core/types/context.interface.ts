@@ -1,9 +1,12 @@
 import { Request } from 'express';
-import { User } from '../../modules/user/user.entity';
+import { JwtPayload } from 'jsonwebtoken';
+import { Role } from './role.enum';
 
-export type Context = {
+export type UserPayload = JwtPayload & { id: string; role: Role };
+
+export interface Context {
   req: Request;
-  user?: User;
-};
+  user?: UserPayload;
+}
 
 export type RequiredContext = Required<Context>;

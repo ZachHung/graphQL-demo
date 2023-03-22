@@ -16,9 +16,12 @@ export class Voucher {
   @Field()
   public readonly id!: string;
 
-  @Field()
-  @Column()
+  @Field(() => User, { nullable: true })
+  @ManyToOne(() => User, (user) => user.id)
   public user?: User;
+
+  @Column({ type: 'uuid' })
+  public userId?: string;
 
   @Field()
   @CreateDateColumn()
