@@ -1,12 +1,12 @@
 import { injectable as Injectable, inject as Inject } from 'inversify';
 import { DataSource, Repository } from 'typeorm';
-import LOCATOR from '../../core/container/types.container';
+import TOKEN from '../../core/container/types.container';
 import BaseRepository from '../../core/types/repository.interface';
 import { Post } from './post.entity';
 
 @Injectable()
 export class PostRepository extends Repository<Post> implements BaseRepository<Post> {
-  constructor(@Inject(LOCATOR.DataSource.Posgres) appDataSource: DataSource) {
+  constructor(@Inject(TOKEN.DataSource.Posgres) appDataSource: DataSource) {
     super(Post, appDataSource.createEntityManager());
   }
 

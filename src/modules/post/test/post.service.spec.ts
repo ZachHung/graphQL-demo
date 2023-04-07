@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import LOCATOR from '../../../core/container/types.container';
+import TOKEN from '../../../core/container/types.container';
 import { Role } from '../../../core/types/role.enum';
 import { createTestingModule } from '../../../utils/test/create-testing-module';
 import { setupConnection } from '../../../utils/test/setup-DB';
@@ -22,8 +22,8 @@ describe('PostService', () => {
 
     // Bind test container
     const moduleRef = createTestingModule(PostModule, UserModule);
-    moduleRef.bind<DataSource>(LOCATOR.DataSource.Posgres).toConstantValue(connection);
-    sut = moduleRef.get(LOCATOR.Services.Post);
+    moduleRef.bind<DataSource>(TOKEN.DataSource.Posgres).toConstantValue(connection);
+    sut = moduleRef.get(TOKEN.Services.Post);
 
     // Create User for Testing
     user = connection.getRepository(User).create({

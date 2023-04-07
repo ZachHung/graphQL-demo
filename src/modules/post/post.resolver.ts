@@ -4,12 +4,12 @@ import { Post } from './post.entity';
 import { CreatePostInput, EditPostInput } from './post.input';
 import { injectable as Injectable, inject as Inject } from 'inversify';
 import { PostService } from './post.service';
-import LOCATOR from '../../core/container/types.container';
+import TOKEN from '../../core/container/types.container';
 
 @Injectable()
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(@Inject(LOCATOR.Services.Post) private readonly postService: PostService) {}
+  constructor(@Inject(TOKEN.Services.Post) private readonly postService: PostService) {}
 
   @Query(() => Post, { nullable: true })
   async postById(@Arg('postId') postId: string): Promise<Post | null> {

@@ -1,4 +1,4 @@
-const LOCATOR = {
+const TOKEN = {
   DataSource: {
     Posgres: Symbol.for('PosgresDataSource'),
   },
@@ -15,4 +15,4 @@ const LOCATOR = {
   },
 };
 
-export default LOCATOR;
+export default TOKEN;

@@ -10,14 +10,14 @@ import { typeReturn } from '../../utils/return-type';
 import { GraphQLError } from 'graphql';
 import { injectable as Injectable, inject as Inject } from 'inversify';
 import UserServiceI from './interfaces/user.service.interface';
-import LOCATOR from '../../core/container/types.container';
+import TOKEN from '../../core/container/types.container';
 import { UserRepository } from './user.repository';
 
 dotenv.config();
 @Injectable()
 export class UserService implements UserServiceI {
   // private readonly userRepository = AppDataSource.getRepository(User);
-  constructor(@Inject(LOCATOR.Repositories.User) private readonly userRepository: UserRepository) {}
+  constructor(@Inject(TOKEN.Repositories.User) private readonly userRepository: UserRepository) {}
   async findById(id: string): Promise<User> {
     const user = await this.userRepository.findOneWhere('id', id);
     if (!user) throw new GraphQLError('User not found!');

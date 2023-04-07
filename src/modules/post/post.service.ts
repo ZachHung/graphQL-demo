@@ -3,13 +3,13 @@ import { typeReturn } from '../../utils/return-type';
 import { Post } from './post.entity';
 import { CreatePostInput, EditPostInput } from './post.input';
 import { inject as Inject, injectable as Injectable } from 'inversify';
-import LOCATOR from '../../core/container/types.container';
+import TOKEN from '../../core/container/types.container';
 import { PostRepository } from './post.repository';
 import { User } from '../user/user.entity';
 
 @Injectable()
 export class PostService {
-  constructor(@Inject(LOCATOR.Repositories.Post) private readonly postRepository: PostRepository) {}
+  constructor(@Inject(TOKEN.Repositories.Post) private readonly postRepository: PostRepository) {}
   async findById(id: string): Promise<Post | null> {
     try {
       const post = await this.postRepository.findOneWhere('id', id);

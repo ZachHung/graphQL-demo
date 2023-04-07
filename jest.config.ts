@@ -1,6 +1,7 @@
 export default {
   coverageProvider: 'v8',
   moduleDirectories: ['node_modules', 'src'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
   testEnvironment: 'node',
   preset: 'ts-jest',
   setupFilesAfterEnv: ['./src/utils/test/setup-test.ts'],

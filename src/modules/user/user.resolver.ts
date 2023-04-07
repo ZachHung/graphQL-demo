@@ -1,18 +1,18 @@
-import { Mutation, Resolver, Arg, Query, Authorized, Ctx } from 'type-graphql';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../../core/types/context.interface';
 
-import { ChangePasswordInput, EditInfoInput, LoginInput, RegisterInput } from './user.input';
-import { User } from './user.entity';
-import { UserTokens } from './user.types';
-import { Role } from '../../core/types/role.enum';
-import { UserService } from './user.service';
 import { inject as Inject, injectable as Injectable } from 'inversify';
-import LOCATOR from '../../core/container/types.container';
+import TOKEN from '../../core/container/types.container';
+import { Role } from '../../core/types/role.enum';
+import { User } from './user.entity';
+import { ChangePasswordInput, EditInfoInput, LoginInput, RegisterInput } from './user.input';
+import { UserService } from './user.service';
+import { UserTokens } from './user.types';
 
 @Injectable()
 @Resolver(() => User)
 export class UserResolver {
-  constructor(@Inject(LOCATOR.Services.User) private readonly userService: UserService) {}
+  constructor(@Inject(TOKEN.Services.User) private readonly userService: UserService) {}
 
   @Authorized()
   @Query((_type) => User)

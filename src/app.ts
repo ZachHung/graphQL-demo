@@ -4,10 +4,10 @@ import { buildSchema } from 'type-graphql';
 import { AppDataSource } from './config/data-source';
 import logger from './config/logger';
 import express, { Request } from 'express';
-import cors from 'cors';
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginInlineTrace,
 } from 'apollo-server-core';
 import { getEnv } from './utils/get-env';
 import { CustomAuthChecker } from './core/middlewares/auth-checker.middleware';
@@ -24,7 +24,6 @@ export const bootstrap = async (): Promise<void> => {
     const app = express();
     const httpServer = http.createServer(app);
     await AppDataSource.initialize();
-    app.use(cors());
     const schema = await buildSchema({
       resolvers: [__dirname + '/modules/**/*.resolver.{ts,js}'],
       globalMiddlewares: [ErrorLoggerMiddleware],
@@ -43,12 +42,13 @@ export const bootstrap = async (): Promise<void> => {
         };
       },
       plugins: [
+        ApolloServerPluginInlineTrace(),
         ApolloServerPluginLandingPageLocalDefault({ embed: true }),
         ApolloServerPluginDrainHttpServer({ httpServer }),
       ],
     });
     await server.start();
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, cors: true });
     httpServer.listen(+getEnv('PORT'), () =>
       logger.info(
         `Server running in ${getEnv('NODE_ENV')} mode at http://localhost:${getEnv('PORT')}${

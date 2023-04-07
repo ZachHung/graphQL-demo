@@ -1,6 +1,6 @@
 import { mock } from 'jest-mock-extended';
 import { mockClear, MockProxy } from 'jest-mock-extended/lib/Mock';
-import LOCATOR from '../../../core/container/types.container';
+import TOKEN from '../../../core/container/types.container';
 import { createTestingModule } from '../../../utils/test/create-testing-module';
 import { CreatePostInput } from '../post.input';
 import { PostModule } from '../post.module';
@@ -9,20 +9,25 @@ import { PostService } from '../post.service';
 import { faker } from '@faker-js/faker';
 import { RequiredContext } from '../../../core/types/context.interface';
 import { Role } from '../../../core/types/role.enum';
+import { User } from '../../user/user.entity';
 
 describe('PostResolver', () => {
-  let mockedPostService: MockProxy<PostService>;
-  let mockedContext: MockProxy<RequiredContext>;
+  const mockedPostService: MockProxy<PostService> = mock<PostService>();
+  let context: RequiredContext;
   let sut: PostResolver;
 
   beforeEach(async () => {
     // Bind test container
     const moduleRef = createTestingModule(PostModule);
-    moduleRef.rebind(LOCATOR.Services.Post).toConstantValue(mockedPostService);
+    moduleRef.rebind(TOKEN.Services.Post).toConstantValue(mockedPostService);
     sut = moduleRef.get(PostResolver);
-
-    mockedPostService = mock<PostService>();
-    mockedContext = mock<RequiredContext>();
+    context = {
+      user: {
+        id: faker.datatype.uuid(),
+        role: Role.USER,
+      },
+    } as RequiredContext;
+    mockClear(mockedPostService);
   });
 
   test('should be define', () => {
@@ -30,23 +35,30 @@ describe('PostResolver', () => {
   });
 
   describe('createOne()', () => {
-    // Arrange
     it('should create a new user', async () => {
+      // Arrange
+
       const createPostDTO: CreatePostInput = {
         content: faker.lorem.paragraph(5),
         title: faker.lorem.sentence(),
       };
-      mockedContext.user.mockReturnValue({
-        id: faker.datatype.uuid,
-        role: Role.USER,
+
+      mockedPostService.create.mockResolvedValue({
+        id: faker.datatype.uuid(),
+        content: createPostDTO.content,
+        title: createPostDTO.title,
+        userId: context.user.id,
+        user: new User(),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
       });
 
       // Act
-      const result = await sut.createPost(createPostDTO, mockedContext);
-      console.log()
+      const result = await sut.createPost(createPostDTO, context);
 
       // Assert
-      expect(result).toBeDefined();
+      expect(result).toMatchObject(createPostDTO);
+      expect(result.userId).toBe(context.user.id);
     });
   });
 });

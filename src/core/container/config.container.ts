@@ -6,12 +6,12 @@ import { PostModule } from '../../modules/post/post.module';
 import { UserModule } from '../../modules/user/user.module';
 import { CustomAuthChecker } from '../middlewares/auth-checker.middleware';
 import { ErrorLoggerMiddleware } from '../middlewares/error-logger.middleware';
-import LOCATOR from './types.container';
+import TOKEN from './types.container';
 
 const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });
 
 container.load(new UserModule(), new PostModule(), new EventModule());
-container.bind<DataSource>(LOCATOR.DataSource.Posgres).toConstantValue(AppDataSource);
+container.bind<DataSource>(TOKEN.DataSource.Posgres).toConstantValue(AppDataSource);
 
 // Bind Middlewares
 container.bind<CustomAuthChecker>(CustomAuthChecker).to(CustomAuthChecker).inSingletonScope();
